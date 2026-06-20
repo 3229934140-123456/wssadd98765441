@@ -1,8 +1,9 @@
-import { TrendingUp, FileText, CalendarDays } from 'lucide-react'
+import { TrendingUp, FileText, CalendarDays, Eye } from 'lucide-react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 const tabs = [
   { path: '/', label: '异动', icon: TrendingUp },
+  { path: '/watchlist', label: '观察', icon: Eye },
   { path: '/weekly', label: '周报', icon: CalendarDays },
   { path: '/discussions', label: '讨论', icon: FileText },
 ]
@@ -11,9 +12,21 @@ export default function BottomNav() {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const currentPath = location.pathname === '/' || location.pathname.startsWith('/detail')
-    ? '/'
-    : location.pathname
+  const getCurrentPath = () => {
+    if (location.pathname === '/' || location.pathname.startsWith('/detail') || location.pathname.startsWith('/discussion/')) {
+      return '/'
+    }
+    return location.pathname
+  }
+
+  const shouldShowNav = () => {
+    const hiddenPaths = ['/detail/', '/discussion/']
+    return !hiddenPaths.some(p => location.pathname.startsWith(p))
+  }
+
+  if (!shouldShowNav()) return null
+
+  const currentPath = getCurrentPath()
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-[#0F172A]/95 backdrop-blur-xl border-t border-[#334155]/50 safe-bottom z-50">
@@ -25,7 +38,7 @@ export default function BottomNav() {
             <button
               key={tab.path}
               onClick={() => navigate(tab.path)}
-              className={`flex flex-col items-center justify-center gap-1 px-6 py-2 rounded-xl transition-all duration-200 ${
+              className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl transition-all duration-200 ${
                 isActive
                   ? 'text-[#38BDF8]'
                   : 'text-[#64748B] hover:text-[#94A3B8]'

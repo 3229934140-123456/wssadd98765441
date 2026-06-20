@@ -23,17 +23,21 @@ export interface TrendDetail extends TrendItem {
   screenshot: string
   relatedWords: string[]
   detailedReason: string
-  isFavorited: boolean
+  initialJudgment: string
 }
 
-export interface Discussion {
+export interface DiscussionDetail {
   id: string
   trendId: string
   initiator: string
   participants: string[]
   screenshot: string
-  rankChart: string
+  rankChartImage: string
   initialJudgment: string
+  trendTitle: string
+  trendRank: number
+  trendChangeType: ChangeType
+  trendRiskLevel: RiskLevel
   createdAt: string
 }
 
@@ -49,17 +53,26 @@ export interface WeeklyReport {
     title: string
     impactLevel: number
     suggestedAction: string
+    sourceTrendIds: string[]
+    trendTitle: string
+    trendCategory: Category
+    rankChange: string
   }[]
   risks: {
     id: string
     title: string
     impactLevel: number
     warningLevel: WarningLevel
+    sourceTrendIds: string[]
+    trendTitle: string
+    trendCategory: Category
+    rankChange: string
   }[]
   timeline: {
     time: string
     event: string
     type: 'opportunity' | 'risk'
+    trendId?: string
   }[]
 }
 

@@ -1,10 +1,12 @@
+import { useNavigate } from 'react-router-dom'
 import {
   TrendingUp, AlertTriangle, ArrowUpRight, ArrowDownRight,
-  Star, Zap, Shield, ChevronRight,
+  Star, Zap, Shield, ChevronRight, ExternalLink,
 } from 'lucide-react'
-import { weeklyReportData } from '@/data/mockData'
+import { weeklyReportData, warningLevelLabels, categoryLabels } from '@/data/mockData'
 
 export default function Weekly() {
+  const navigate = useNavigate()
   const report = weeklyReportData
 
   return (
@@ -47,27 +49,41 @@ export default function Weekly() {
           </div>
           <div className="space-y-2">
             {report.opportunities.map((item, i) => (
-              <div
+              <button
                 key={item.id}
-                className="bg-[#1E293B] rounded-xl p-3.5 border-l-2 border-[#10B981] animate-card-enter"
+                onClick={() => item.sourceTrendIds[0] && navigate(`/detail/${item.sourceTrendIds[0]}`)}
+                className="w-full text-left bg-[#1E293B] rounded-xl p-3.5 border-l-2 border-[#10B981] animate-card-enter hover:bg-[#263548] transition-colors"
                 style={{ animationDelay: `${i * 60}ms` }}
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1">
-                    <h3 className="text-[13px] font-bold text-[#F8FAFC] mb-1">{item.title}</h3>
-                    <p className="text-[11px] text-[#94A3B8] leading-relaxed">{item.suggestedAction}</p>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="text-[13px] font-bold text-[#F8FAFC]">{item.title}</h3>
+                      <ExternalLink size={10} className="text-[#64748B]" />
+                    </div>
+                    <p className="text-[11px] text-[#94A3B8] leading-relaxed mb-2">{item.suggestedAction}</p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-[10px] text-[#64748B]">来源话题：</span>
+                      <span className="text-[10px] text-[#38BDF8]">{item.trendTitle}</span>
+                      <span className="text-[10px] text-[#64748B]">
+                        {categoryLabels[item.trendCategory]} · {item.rankChange}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-0.5 flex-shrink-0 mt-0.5">
-                    {Array.from({ length: 5 }).map((_, si) => (
-                      <Star
-                        key={si}
-                        size={10}
-                        className={si < item.impactLevel ? 'text-[#10B981] fill-[#10B981]' : 'text-[#334155]'}
-                      />
-                    ))}
+                  <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                    <div className="flex items-center gap-0.5">
+                      {Array.from({ length: 5 }).map((_, si) => (
+                        <Star
+                          key={si}
+                          size={10}
+                          className={si < item.impactLevel ? 'text-[#10B981] fill-[#10B981]' : 'text-[#334155]'}
+                        />
+                      ))}
+                    </div>
+                    <ChevronRight size={12} className="text-[#64748B]" />
                   </div>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </section>
@@ -84,37 +100,46 @@ export default function Weekly() {
                 medium: 'bg-[#F59E0B]/15 text-[#F59E0B] border-[#F59E0B]/20',
                 low: 'bg-[#64748B]/15 text-[#94A3B8] border-[#64748B]/20',
               }
-              const levelText: Record<string, string> = {
-                high: '高危',
-                medium: '中危',
-                low: '低危',
-              }
               return (
-                <div
+                <button
                   key={item.id}
-                  className="bg-[#1E293B] rounded-xl p-3.5 border-l-2 border-[#FF6B6B] animate-card-enter"
+                  onClick={() => item.sourceTrendIds[0] && navigate(`/detail/${item.sourceTrendIds[0]}`)}
+                  className="w-full text-left bg-[#1E293B] rounded-xl p-3.5 border-l-2 border-[#FF6B6B] animate-card-enter hover:bg-[#263548] transition-colors"
                   style={{ animationDelay: `${i * 60}ms` }}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1">
-                      <h3 className="text-[13px] font-bold text-[#F8FAFC] mb-1">{item.title}</h3>
-                    </div>
-                    <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${levelStyle[item.warningLevel]}`}>
-                        {levelText[item.warningLevel]}
-                      </span>
-                      <div className="flex items-center gap-0.5">
-                        {Array.from({ length: 5 }).map((_, si) => (
-                          <Star
-                            key={si}
-                            size={10}
-                            className={si < item.impactLevel ? 'text-[#FF6B6B] fill-[#FF6B6B]' : 'text-[#334155]'}
-                          />
-                        ))}
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-[13px] font-bold text-[#F8FAFC]">{item.title}</h3>
+                        <ExternalLink size={10} className="text-[#64748B]" />
+                      </div>
+                      <div className="flex items-center gap-2 flex-wrap mb-2">
+                        <span className="text-[10px] text-[#64748B]">来源话题：</span>
+                        <span className="text-[10px] text-[#38BDF8]">{item.trendTitle}</span>
+                        <span className="text-[10px] text-[#64748B]">
+                          {categoryLabels[item.trendCategory]} · {item.rankChange}
+                        </span>
                       </div>
                     </div>
+                    <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${levelStyle[item.warningLevel]}`}>
+                          {warningLevelLabels[item.warningLevel]}
+                        </span>
+                        <div className="flex items-center gap-0.5">
+                          {Array.from({ length: 5 }).map((_, si) => (
+                            <Star
+                              key={si}
+                              size={10}
+                              className={si < item.impactLevel ? 'text-[#FF6B6B] fill-[#FF6B6B]' : 'text-[#334155]'}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <ChevronRight size={12} className="text-[#64748B]" />
+                    </div>
                   </div>
-                </div>
+                </button>
               )
             })}
           </div>
@@ -131,18 +156,20 @@ export default function Weekly() {
             {report.timeline.map((item, i) => {
               const isOpportunity = item.type === 'opportunity'
               return (
-                <div
+                <button
                   key={i}
-                  className="relative pb-5 last:pb-0 animate-card-enter"
+                  onClick={() => item.trendId && navigate(`/detail/${item.trendId}`)}
+                  disabled={!item.trendId}
+                  className={`w-full text-left relative pb-5 last:pb-0 animate-card-enter ${item.trendId ? 'cursor-pointer' : 'cursor-default'}`}
                   style={{ animationDelay: `${i * 50}ms` }}
                 >
-                  <div className={`absolute -left-6 top-1 w-3.5 h-3.5 rounded-full border-2 ${
+                  <div className={`absolute -left-6 top-1 w-3.5 h-3.5 rounded-full border-2 z-10 ${
                     isOpportunity
                       ? 'bg-[#10B981] border-[#0F172A]'
                       : 'bg-[#FF6B6B] border-[#0F172A]'
                   }`} />
 
-                  <div className="bg-[#1E293B] rounded-xl p-3">
+                  <div className="bg-[#1E293B] rounded-xl p-3 hover:bg-[#263548] transition-colors">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-[10px] mono text-[#64748B]">{item.time}</span>
                       {isOpportunity ? (
@@ -150,10 +177,13 @@ export default function Weekly() {
                       ) : (
                         <ArrowDownRight size={12} className="text-[#FF6B6B]" />
                       )}
+                      {item.trendId && (
+                        <ExternalLink size={10} className="text-[#64748B] ml-auto" />
+                      )}
                     </div>
                     <p className="text-[12px] text-[#94A3B8] leading-relaxed">{item.event}</p>
                   </div>
-                </div>
+                </button>
               )
             })}
           </div>

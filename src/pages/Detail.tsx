@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
   ArrowLeft, Heart, MessageSquare, Clock, TrendingUp,
-  Flame, Trophy, Timer, Tag, Image,
+  Flame, Trophy, Timer, Tag, Image, FileText,
 } from 'lucide-react'
 import { useStore } from '@/store/useStore'
 import { changeTypeLabels, riskLevelLabels } from '@/data/mockData'
@@ -32,31 +32,16 @@ export default function Detail() {
   const detail = id ? getTrendDetail(id) : null
 
   if (!detail) {
-    const fallback = id ? { id, title: '#示例话题#', category: 'brand' as const, changeType: 'rising' as ChangeType, heatValue: 50000, currentRank: 5, peakRank: 2, timeOnList: '3小时', timestamp: '2026-06-20T10:00:00', reason: '示例异动原因', tags: ['示例'], riskLevel: 'opportunity' as RiskLevel, rankHistory: [{ time: '08:00', rank: 20 }, { time: '09:00', rank: 12 }, { time: '10:00', rank: 5 }], screenshot: '', relatedWords: ['示例词'], detailedReason: '这是一条示例详情数据，用于展示详情页布局。', isFavorited: false } : null
-    if (!fallback) return null
-
     return (
-      <div className="min-h-screen bg-[#0F172A] pb-24">
-        <DetailHeader title={fallback.title} onBack={() => navigate('/')} />
-        <DetailContent
-          detail={fallback}
-          isFavorited={favorites.has(fallback.id)}
-          onToggleFavorite={() => toggleFavorite(fallback.id)}
-          onOpenDiscussion={() => setShowDiscussion(true)}
-        />
-        <DiscussionPanel
-          open={showDiscussion}
-          onClose={() => setShowDiscussion(false)}
-          onSend={(p) => addDiscussion(fallback.id, p)}
-          trendTitle={fallback.title}
-        />
+      <div className="min-h-screen bg-[#0F172A] pb-24 flex items-center justify-center">
+        <p className="text-[#64748B]">该话题不存在或已下架</p>
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-[#0F172A] pb-24">
-      <DetailHeader title={detail.title} onBack={() => navigate('/')} />
+      <DetailHeader title={detail.title} onBack={() => navigate(-1)} />
       <DetailContent
         detail={detail}
         isFavorited={favorites.has(detail.id)}
@@ -155,6 +140,16 @@ function DetailContent({
           <h2 className="text-sm font-bold text-[#F8FAFC]">异动原因解读</h2>
         </div>
         <p className="text-[13px] text-[#94A3B8] leading-relaxed">{detail.detailedReason}</p>
+      </div>
+
+      <div className="bg-[#1E293B] rounded-2xl p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <FileText size={14} className="text-[#A78BFA]" />
+          <h2 className="text-sm font-bold text-[#F8FAFC]">初步判断</h2>
+        </div>
+        <div className="p-3 bg-[#0F172A] rounded-xl border border-[#A78BFA]/10">
+          <p className="text-[13px] text-[#94A3B8] leading-relaxed">{detail.initialJudgment}</p>
+        </div>
       </div>
 
       <div className="bg-[#1E293B] rounded-2xl p-4">
